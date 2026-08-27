@@ -409,7 +409,7 @@ async def main() -> None:
     _LOGGER.info("Model loaded successfully")
     _LOGGER.info("Sample rate: %d Hz", tts_model.sample_rate)
 
-    _LOGGER.info("Pre-loading voice states for %d voices...", len(PREDEFINED_VOICES))
+    _LOGGER.info("Pre-loading voice states for %d voices...", len(PREDEFINED_VOICE_NAMES))
     for voice_name in PREDEFINED_VOICE_NAMES:
         try:
             voice_state = tts_model.get_state_for_audio_prompt(voice_name)
