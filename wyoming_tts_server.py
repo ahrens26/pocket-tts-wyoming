@@ -18,7 +18,6 @@ from typing import Optional
 import numpy
 
 from pocket_tts import TTSModel
-from pocket_tts.default_parameters import DEFAULT_VARIANT
 from pocket_tts.utils.utils import PREDEFINED_VOICES
 from wyoming.audio import AudioChunk, AudioStart, AudioStop
 from wyoming.error import Error
@@ -37,7 +36,10 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_PORT = int(os.environ.get("WYOMING_PORT", "10201"))
 DEFAULT_VOICE = os.environ.get("DEFAULT_VOICE", "alba")
-MODEL_VARIANT = os.environ.get("MODEL_VARIANT", DEFAULT_VARIANT)
+_LEGACY_VARIANT_MAP = {"b6369a24": "english"}
+DEFAULT_LANGUAGE = "english"
+MODEL_VARIANT = os.environ.get("MODEL_VARIANT", DEFAULT_LANGUAGE)
+MODEL_VARIANT = _LEGACY_VARIANT_MAP.get(MODEL_VARIANT, MODEL_VARIANT)
 DEBUG_WAV = os.environ.get("DEBUG_WAV", "").lower() in ("true", "1", "yes")
 
 # Prefix trimming tunables (in seconds)
@@ -394,10 +396,9 @@ async def main() -> None:
         _LOGGER.info("Debug WAV mode enabled - WAV files will be written to /output/ on every response")
     _LOGGER.debug(args)
 
-    os.environ["MODEL_VARIANT"] = args.variant
-    variant = os.environ.get("MODEL_VARIANT", MODEL_VARIANT)
-    _LOGGER.info("Loading Pocket-TTS model (variant: %s)...", variant)
-    tts_model = TTSModel.load_model(config=variant)
+    variant = _LEGACY_VARIANT_MAP.get(args.variant, args.variant)
+    _LOGGER.info("Loading Pocket-TTS model (language: %s)...", variant)
+    tts_model = TTSModel.load_model(language=variant)
     _LOGGER.info("Model loaded successfully")
     _LOGGER.info("Sample rate: %d Hz", tts_model.sample_rate)
 
