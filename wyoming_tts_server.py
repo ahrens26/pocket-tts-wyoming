@@ -18,7 +18,14 @@ from typing import Optional
 import numpy
 
 from pocket_tts import TTSModel
-from pocket_tts.utils.utils import PREDEFINED_VOICES
+try:
+    from pocket_tts.utils.utils import _ORIGINS_OF_PREDEFINED_VOICES as PREDEFINED_VOICE_NAMES
+except ImportError:
+    # Fallback in case this private name also changes upstream later.
+    PREDEFINED_VOICE_NAMES = {
+        "alba": None, "marius": None, "javert": None, "jean": None,
+        "fantine": None, "cosette": None, "eponine": None, "azelma": None,
+    }
 from wyoming.audio import AudioChunk, AudioStart, AudioStop
 from wyoming.error import Error
 from wyoming.event import Event
@@ -162,7 +169,7 @@ class PocketTTSEventHandler(AsyncEventHandler):
         if voice_name and voice_name.startswith("pocket-tts-"):
             voice_name = voice_name.replace("pocket-tts-", "", 1)
 
-        if voice_name not in PREDEFINED_VOICES:
+        if voice_name not in PREDEFINED_VOICE_NAMES:
             _LOGGER.warning(
                 "Voice '%s' not found, using default '%s'", voice_name, self.cli_args.voice
             )
@@ -403,7 +410,7 @@ async def main() -> None:
     _LOGGER.info("Sample rate: %d Hz", tts_model.sample_rate)
 
     _LOGGER.info("Pre-loading voice states for %d voices...", len(PREDEFINED_VOICES))
-    for voice_name in PREDEFINED_VOICES:
+    for voice_name in PREDEFINED_VOICE_NAMES:
         try:
             voice_state = tts_model.get_state_for_audio_prompt(voice_name)
             global _VOICE_STATES
@@ -426,7 +433,7 @@ async def main() -> None:
             languages=["en"],
             speakers=None,
         )
-        for voice_name in PREDEFINED_VOICES
+        for voice_name in PREDEFINED_VOICE_NAMES
     ]
 
     wyoming_info = Info(
@@ -483,7 +490,7 @@ async def main() -> None:
                      zeroconf_name, tcp_server.port, zeroconf_host)
 
     _LOGGER.info("Ready")
-    _LOGGER.info("Available voices: %s", ", ".join(PREDEFINED_VOICES.keys()))
+    _LOGGER.info("Available voices: %s", ", ".join(PREDEFINED_VOICE_NAMES.keys()))
     await server.run(
         partial(
             PocketTTSEventHandler,
