@@ -8,12 +8,15 @@ RUN git clone https://github.com/kyutai-labs/pocket-tts.git .
 
 COPY wyoming_tts_server.py .
 
+ENV UV_TORCH_BACKEND=cpu
+
 RUN uv add "wyoming>=1.8,<2" zeroconf
+RUN uv sync --frozen --no-dev || uv sync
 
 ENV WYOMING_PORT=10201
 ENV WYOMING_HOST=0.0.0.0
 ENV DEFAULT_VOICE=alba
-ENV MODEL_VARIANT=b6369a24
+ENV MODEL_VARIANT=english
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 10201
