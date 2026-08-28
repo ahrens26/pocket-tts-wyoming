@@ -11,7 +11,8 @@ COPY wyoming_tts_server.py .
 ENV UV_TORCH_BACKEND=cpu
 
 RUN uv add "wyoming>=1.8,<2" zeroconf
-RUN uv sync --frozen --no-dev || uv sync
+RUN uv add "torch" --index https://download.pytorch.org/whl/cpu --reinstall
+RUN uv sync
 
 ENV WYOMING_PORT=10201
 ENV WYOMING_HOST=0.0.0.0
