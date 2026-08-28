@@ -16,7 +16,7 @@ services:
       - WYOMING_PORT=10201
       - WYOMING_HOST=0.0.0.0
       - DEFAULT_VOICE=alba
-      - MODEL_VARIANT=b6369a24
+      - MODEL_VARIANT=english
       - ZEROCONF=pocket-tts
     restart: unless-stopped
     volumes:
@@ -39,7 +39,7 @@ You can customize the following environment variables in the compose file before
 | `WYOMING_PORT` | `10201` | The port the Wyoming protocol server listens on. Change if you have a conflict with another service. |
 | `WYOMING_HOST` | `0.0.0.0` | The network interface to bind to. `0.0.0.0` accepts connections from any interface. |
 | `DEFAULT_VOICE` | `alba` | The default voice used when none is specified. See [Available Voices](#available-voices) for options. |
-| `MODEL_VARIANT` | `b6369a24` | The Pocket-TTS model variant to use. This corresponds to a specific model checkpoint. |
+| `MODEL_VARIANT` | `english` | The Pocket-TTS language to use. |
 | `ZEROCONF` | `pocket-tts` | Service name for mDNS/Zeroconf discovery. Home Assistant uses this to auto-discover the TTS server. Set to empty string to disable. |
 
 Pull and start:
@@ -66,7 +66,7 @@ docker run -d \
   --name pocket-tts-wyoming \
   --network host \
   -e DEFAULT_VOICE=alba \
-  -e MODEL_VARIANT=b6369a24 \
+  -e MODEL_VARIANT=english \
   -e ZEROCONF=pocket-tts \
   -v pocket-tts-hf-cache:/root/.cache/huggingface \
   -v pocket-tts-cache:/root/.cache/pocket_tts \
